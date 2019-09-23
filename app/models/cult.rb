@@ -18,59 +18,67 @@ class Cult
     end
 
     def self.find_by_name(name)
-        self.all.find{|cult| cult.name == name}
-    end
+        @@all.find_all{|cult| cult.name == name}
+    end 
 
     def self.find_by_location(location)
-        self.all.select{|cult| cult.location == location}
+        @@all.select{|cult| cult.location == location}
     end
 
-    def self.find_by_founding_year(founding_year)
-        self.all.select{|cult| cult.founding_year == founding_year}
-    end
-
-    def self.least_popular
-        self.all.min_by{|cult| cult.followers.length}
-    end
-
-    def self.most_common_location
-
-        locs = {}
-
-        self.all.each do |cult|
-            if !locs[cult.location]
-                locs[cult.location] = 1
-            else
-                locs[cult.location] += 1
-            end
-        end 
-        locs.max_by{|key, value| value}[0]
-    end
-
-    def bloodoaths 
-        Bloodoath.all.select{|blood| blood.cult == self}
-    end
-
-    def followers
-        bloodoaths.map{|blood| blood.follower}
-    end
+    def self.find_by_founding_year(year)
+        @@all.select{|cult| cult.founding_year == year}
+    end 
 
     def recruit_follower(follower)
         Bloodoath.new(self, follower)
-    end
+    end 
+
+    def bloodoaths 
+        Bloodoath.all.select{|bloodoath| bloodoath.cult == self}
+    end 
+
+    def followers
+        bloodoaths.map{|bloodoath| bloodoath.follower}
+    end 
 
     def cult_population
-        followers.count
+        followers.length
     end
 
     def average_age
-    total = followers.reduce(0){|sum, follower| sum + follower.age}
-    total / self.cult_population
+        total_of_all_ages = followers.map{|follower| follower.age}.sum
+        # total_of_all_ages = followers.reduce(0) {|sum, follower| sum += follower.age}
+        num_of_followers = cult_population
+
+        total_of_all_ages.to_f / num_of_followers.to_f
     end
 
-    def my_followers_mottos
-        followers.map{|follower| follower.life_motto} 
+    def self.most_common_location
+        # array_of_locations = Cult.all.map{|cult| cult.location}
+        # # array_of_locations.max_by{|loc| num_of_cults(loc)}
+
+        # array_of_locations.max_by{|loc| array_of_locations.count(loc)}
+        @@all.each_with_object({}) do |cult, object|
+            object[cult.location] = object[cult.location] || 1
+            object[cult.location] ||= 1
+            # if object[cult.location]
+            #     object[cult.location] += 1
+            # else
+            #     object[cult.location] = 1
+            # end
+        end
     end
 
+end
 
+def num_of_cults(location)
+    count = 0
+
+    Cult.all.each do |cult|
+        if cult.location == location
+            count += 1
+        end
+    end
+
+    count
 end
