@@ -35,7 +35,7 @@ class Follower
         self.sorted_by_cults_joined[0..9]
     end
 
-    def bloodoaths 
+    def bloodoaths
         Bloodoath.all.select{|blood| blood.follower == self}
     end
 
@@ -43,7 +43,7 @@ class Follower
         bloodoaths.map{|blood| blood.cult}
     end
 
-    def my_cults_slogans
-
+    def join_cult(cult)
+        Bloodoath.new(cult, self)
     end
 end
