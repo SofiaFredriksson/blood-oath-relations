@@ -29,6 +29,24 @@ class Cult
         self.all.select{|cult| cult.founding_year == founding_year}
     end
 
+    def self.least_popular
+        self.all.min_by{|cult| cult.followers.length}
+    end
+
+    def self.most_common_location
+
+        locs = {}
+
+        self.all.each do |cult|
+            if !locs[cult.location]
+                locs[cult.location] = 1
+            else
+                locs[cult.location] += 1
+            end
+        end 
+        locs.max_by{|key, value| value}[0]
+    end
+
     def bloodoaths 
         Bloodoath.all.select{|blood| blood.cult == self}
     end
@@ -44,4 +62,15 @@ class Cult
     def cult_population
         followers.count
     end
+
+    def average_age
+    total = followers.reduce(0){|sum, follower| sum + follower.age}
+    total / self.cult_population
+    end
+
+    def my_followers_mottos
+        followers.map{|follower| follower.life_motto} 
+    end
+
+
 end

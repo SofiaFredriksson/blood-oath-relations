@@ -20,6 +20,8 @@ Bloodoath.new(c1, f1)
 Bloodoath.new(c2, f3)
 Bloodoath.new(c3, f2)
 Bloodoath.new(c2, f2)
+Bloodoath.new(c2, f2)
+Bloodoath.new(c2, f2)
 
 c1.recruit_follower(f1)
 
